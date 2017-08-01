@@ -1,0 +1,32 @@
+---
+driver:
+  name: ec2
+  aws_ssh_key_id: delivera_keys
+  region: us-west-2
+  image_id: ami-718c6909
+  availability_zone: a
+  subnet_id: subnet-75d7ec3c
+  instance_type: t2.micro
+  security_group_ids: sg-057dcd7f
+  retryable_tries: 120
+
+provisioner:
+  name: chef_solo
+
+verifier:
+  name: inspec
+
+transport:
+  ssh_key: ~/.ssh/delivera_keys.pem
+
+platforms:
+  - name: ubuntu-14.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[java_hadoop]
+    verifier:
+      inspec_tests:
+        - test/smoke/default
+    attributes:
